@@ -1,0 +1,18 @@
+{
+  "name": "number-guessing-game",
+  "version": "1.0.0",
+  "description": "An addictive arcade-style Number Guessing Game with dynamic range constriction, audio synthesis, and streak mechanics.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "guessing-game",
+    "arcade-game",
+    "javascript-game",
+    "web-audio-api",
+    "gamification"
+  ],
+  "author": "Yash Patil",
+  "license": "MIT"
+}
