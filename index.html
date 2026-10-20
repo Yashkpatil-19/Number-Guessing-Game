@@ -503,11 +503,21 @@
         <button class="pill-btn" id="modeSurvival" onclick="setGameMode('survival')">💖 7 Lives</button>
         <button class="pill-btn" id="modeBlitz" onclick="setGameMode('blitz')">⚡ 60s Blitz</button>
       </div>
-      <div class="max-selector">
-        <span>Max:</span>
-        <button class="max-btn" onclick="setMax(50)">50</button>
-        <button class="max-btn active" onclick="setMax(100)">100</button>
-        <button class="max-btn" onclick="setMax(500)">500</button>
+      <div id="currentLevelTag" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 800; color: var(--accent-amber);">
+        Level 3: Hard (1-100)
+      </div>
+    </div>
+
+    <!-- Level Change Strip -->
+    <div class="controls-strip" style="background: rgba(0, 0, 0, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.05); gap: 0.4rem;">
+      <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+        <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); margin-right: 0.2rem;">✨ Level Change:</span>
+        <button class="pill-btn level-btn" id="lvlBtn1" onclick="changeLevel(1, 25)">⭐ Lvl 1 (1-25)</button>
+        <button class="pill-btn level-btn" id="lvlBtn2" onclick="changeLevel(2, 50)">⭐⭐ Lvl 2 (1-50)</button>
+        <button class="pill-btn level-btn active" id="lvlBtn3" onclick="changeLevel(3, 100)">⭐⭐⭐ Lvl 3 (1-100)</button>
+        <button class="pill-btn level-btn" id="lvlBtn4" onclick="changeLevel(4, 250)">⭐⭐⭐⭐ Lvl 4 (1-250)</button>
+        <button class="pill-btn level-btn" id="lvlBtn5" onclick="changeLevel(5, 500)">👑 Lvl 5 (1-500)</button>
+        <button class="pill-btn level-btn" id="lvlBtn6" onclick="changeLevel(6, 1000)">🌌 Lvl 6 (1-1000)</button>
       </div>
     </div>
 
@@ -553,7 +563,10 @@
         <div style="font-size: 2.5rem;">🏆</div>
         <h2>CORRECT GUESS!</h2>
         <p id="victoryDetails" style="font-size: 0.95rem; opacity: 0.9;"></p>
-        <button class="play-again-btn" onclick="initGame()">PLAY AGAIN (Space / Enter)</button>
+        <div style="display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap;">
+          <button id="nextLevelBtn" class="play-again-btn" style="background: var(--accent-emerald); color: #000;" onclick="advanceLevel()">NEXT LEVEL ➔</button>
+          <button class="play-again-btn" onclick="initGame()">REPLAY LEVEL (Space / Enter)</button>
+        </div>
       </div>
 
       <!-- INPUT FORM -->
@@ -776,11 +789,42 @@
       input.focus();
     }
 
+    let currentLevel = 3;
+    const LEVELS = [
+      { id: 1, name: 'Easy', max: 25 },
+      { id: 2, name: 'Normal', max: 50 },
+      { id: 3, name: 'Hard', max: 100 },
+      { id: 4, name: 'Expert', max: 250 },
+      { id: 5, name: 'Master', max: 500 },
+      { id: 6, name: 'Quantum', max: 1000 },
+    ];
+
+    function changeLevel(lvlId, maxVal) {
+      sound.click();
+      currentLevel = lvlId;
+      max = maxVal;
+      document.querySelectorAll('.level-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx + 1 === lvlId);
+      });
+      const lvlObj = LEVELS.find(l => l.id === lvlId);
+      const tag = document.getElementById('currentLevelTag');
+      if (tag) {
+        tag.textContent = `Level ${lvlId}: ${lvlObj ? lvlObj.name : ''} (1-${maxVal})`;
+      }
+      initGame();
+    }
+
+    function advanceLevel() {
+      if (currentLevel < LEVELS.length) {
+        const next = LEVELS[currentLevel];
+        changeLevel(next.id, next.max);
+      } else {
+        initGame();
+      }
+    }
+
     function setMax(newMax) {
       max = newMax;
-      document.querySelectorAll('.max-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent == newMax);
-      });
       initGame();
     }
 
